@@ -85,3 +85,23 @@ yLink f m1 m2 = link m1 (\v1 -> link m2 (\v2 -> mkMaybe (f v1 v2)))
 
 addSalaries2 :: [(String, Integer)] -> String -> String -> Maybe Integer
 addSalaries2 xs n1 n2 = yLink (+) (lookupMay n1 xs) (lookupMay n2 xs)
+
+tailProd :: Num a => [a] -> Maybe a
+tailProd xs = transMaybe product (tailMay xs)
+
+tailSum :: Num a => [a] -> Maybe a
+tailSum xs = transMaybe sum (tailMay xs)
+
+transMaybe :: (a -> b) -> Maybe a -> Maybe b
+transMaybe f Nothing = Nothing
+transMaybe f (Just a) = Just (f a)
+
+tailMax :: Ord a => [a] -> Maybe a
+tailMax xs = combine $ transMaybe maximumMay (tailMay xs)
+
+tailMin :: Ord a => [a] -> Maybe a
+tailMin xs = combine $ transMaybe maximumMay (tailMay xs)
+
+combine :: Maybe (Maybe a) -> Maybe a
+combine Nothing = Nothing
+combine (Just ma) = ma
